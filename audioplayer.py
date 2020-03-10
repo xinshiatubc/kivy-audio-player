@@ -34,6 +34,11 @@ class LoadDialog(FloatLayout):
     cancel = ObjectProperty(None)
 
 
+class Dialog(FloatLayout):
+    cancel = ObjectProperty(None)
+    message = StringProperty(None)
+
+
 class AudioPanel(BoxLayout):
     audio_file = ObjectProperty(None)
 
@@ -51,7 +56,7 @@ class Root(BoxLayout):
         audio_list = self.ids['audio_list']
         audio_list.clear_widgets()
 
-        iterate_over_files(file_path.decode("utf-8"))
+        self.iterate_over_files(file_path.decode("utf-8"))
 
     def dismiss_popup(self):
         self._popup.dismiss()
@@ -67,30 +72,39 @@ class Root(BoxLayout):
         dir_input = self.ids['dir_input']
 
         dir_input.text = filename
-        iterate_over_files(str(filename))
+        self.iterate_over_files(str(filename))
         self.dismiss_popup()
 
+    def showDialogBox(self):
+        content = Dialog(cancel=self.dismiss_popup, message="Please drop in a folder.")
+        self._popup = Popup(title="Please Double Check",
+                            content=content,
+                            size_hint=(0.5, 0.3))
+        self._popup.open()
 
-def iterate_over_files(root_dir):
-    logging.info("Iterating through " + root_dir)
+    def iterate_over_files(self, root_dir):
+        logging.info("Iterating through " + root_dir)
 
-    # first calculate number of files to process
-    file_count = 0
-    app = App.get_running_app()
-    audio_list = app.root.ids['audio_list']
-    audio_list.bind(minimum_height=audio_list.setter('height'))
+        # first calculate number of files to process
+        file_count = 0
+        app = App.get_running_app()
+        audio_list = self.ids['audio_list']
+        audio_list.bind(minimum_height=audio_list.setter('height'))
 
-    for subdir, dirs, files in os.walk(root_dir):
-        for file in files:
-            file_path = subdir + os.sep + file
-            if is_audio_file(file):
-                file_count += 1
-                content = AudioPanel()
-                audio_list.add_widget(content)
+        for subdir, dirs, files in os.walk(root_dir):
+            for file in files:
+                file_path = subdir + os.sep + file
+                if is_audio_file(file):
+                    file_count += 1
+                    content = AudioPanel()
+                    audio_list.add_widget(content)
 
-    count_label = app.root.ids['file_count_label']
-    count_label.text = str(file_count) + " audio files found"
-    logging.info(str(file_count) + " audio files found")
+        count_label = app.root.ids['file_count_label']
+        count_label.text = str(file_count) + " audio files found"
+        logging.info(str(file_count) + " audio files found")
+
+        if file_count == 0 and os.path.isfile(root_dir):
+            self.showDialogBox()
 
 
 def is_audio_file(filename):

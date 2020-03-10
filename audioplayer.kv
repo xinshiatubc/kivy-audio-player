@@ -74,6 +74,7 @@ Root:
 
 
 <AudioPanel>:
+    id:audio_panel
     height: 90
     size_hint_y: None
     padding: [0,10,10,10]
@@ -85,16 +86,30 @@ Root:
     Label:
         size_hint_x: 0.15
         size_hint_y: 1
-        text: ""
+        text: audio_panel.set_progress()
     BoxLayout:
         size_hint_x:0.55
         size_hint_y: 1
         canvas:
             Color:
-                rgba:0.95,0.85,0.26,1
+                rgba:0.95,0.85,0.26,0
             Rectangle:
                 pos:self.pos
                 size:self.size
+        FloatLayout:
+            pos_hint: {"x":0,"y":0}
+
+            FloatLayout:
+                pos_hint: {'x':0, 'y':0}
+
+            FloatLayout:
+                pos_hint: {'x':0, 'y':0}
+                ProgressBar:
+                    value:0
+                    max:audio_panel.get_duration()
+                    pos_hint:{'x': 0, 'y': 0}
+
+
     Slider:
         size_hint_x:0.2
         size_hint_y: 1

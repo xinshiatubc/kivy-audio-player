@@ -41,6 +41,25 @@ class Dialog(FloatLayout):
 
 class AudioPanel(BoxLayout):
     audio_file = ObjectProperty(None)
+    sound = ObjectProperty(None, allownone=True)
+    duration = NumericProperty(0.0)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def get_duration(self):
+        self.sound = SoundLoader.load(self.audio_file)
+        self.duration = self.sound.length
+        return self.duration
+
+    def set_progress(self):
+        if self.sound is None:
+            duration = self.get_duration()
+        else:
+            duration = self.duration
+        return str(datetime.timedelta(seconds=math.floor(duration)))
+
+
 
 
 class Root(BoxLayout):
@@ -96,7 +115,7 @@ class Root(BoxLayout):
                 file_path = subdir + os.sep + file
                 if is_audio_file(file):
                     file_count += 1
-                    content = AudioPanel()
+                    content = AudioPanel(audio_file=file_path)
                     audio_list.add_widget(content)
 
         count_label = app.root.ids['file_count_label']

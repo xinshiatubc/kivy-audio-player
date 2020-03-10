@@ -47,6 +47,10 @@ class Root(BoxLayout):
     def _on_file_drop(self, window, file_path):
         dir_input = self.ids['dir_input']
         dir_input.text = file_path
+        # clear old input
+        audio_list = self.ids['audio_list']
+        audio_list.clear_widgets()
+
         iterate_over_files(file_path.decode("utf-8"))
 
     def dismiss_popup(self):
@@ -81,7 +85,8 @@ def iterate_over_files(root_dir):
             file_path = subdir + os.sep + file
             if is_audio_file(file):
                 file_count += 1
-                audio_list.add_widget(AudioPanel(audio_file=file_path))
+                content = AudioPanel()
+                audio_list.add_widget(content)
 
     count_label = app.root.ids['file_count_label']
     count_label.text = str(file_count) + " audio files found"

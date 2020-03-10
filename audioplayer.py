@@ -73,9 +73,13 @@ class Root(BoxLayout):
         dir_input.text = file_path
         # clear old input
         audio_list = self.ids['audio_list']
+
         audio_list.clear_widgets()
 
-        self.iterate_over_files(file_path.decode("utf-8"))
+        t = Thread(target=self.iterate_over_files, args=[file_path.decode("utf-8")])
+        t.daemon = True
+        t.start()
+        #self.iterate_over_files(file_path.decode("utf-8"))
 
     def dismiss_popup(self):
         self._popup.dismiss()

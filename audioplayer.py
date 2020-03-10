@@ -43,9 +43,37 @@ class AudioPanel(BoxLayout):
     audio_file = ObjectProperty(None)
     sound = ObjectProperty(None, allownone=True)
     duration = NumericProperty(0.0)
+    volume = NumericProperty(1.0)
+    play_button = ObjectProperty(None)
+    progress_label = ObjectProperty(None)
+    progress_box = ObjectProperty(None)
+    slider = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        for child in self.children:
+            object_class = child.__class__.__name__
+            if object_class == 'Slider':
+                slider = child
+            if object_class == 'BoxLayout':
+                progress_box = child
+            if object_class == 'Label':
+                progress_label = child
+            if object_class == 'Button':
+                play_button = child
+
+    def get_layout(self):
+        for child in self.children:
+            object_class = child.__class__.__name__
+            logging.info(object_class)
+            if object_class == 'Slider':
+                self.slider = child
+            if object_class == 'BoxLayout':
+                self.progress_box = child
+            if object_class == 'Label':
+                self.progress_label = child
+            if object_class == 'Button':
+                self.play_button = child
 
     def get_duration(self):
         self.sound = SoundLoader.load(self.audio_file)
@@ -59,7 +87,22 @@ class AudioPanel(BoxLayout):
             duration = self.duration
         return str(datetime.timedelta(seconds=math.floor(duration)))
 
+    def play_audio(self):
+        if self.sound is None:
+            self.sound = SoundLoader.load(self.audio_file)
 
+        if self.sound.status != 'stop':
+            self.sound.stop()
+            if self.play_button is None:
+                self.get_layout()
+                logging.info(self.play_button)
+            self.play_button.background_normal = "./img/play_inverse.png"
+        else:
+            self.sound.volume = self.volume
+            self.sound.play()
+            if self.play_button is None:
+                self.get_layout()
+            self.play_button.background_normal = "./img/stop_inverse.png"
 
 
 class Root(BoxLayout):
@@ -79,7 +122,7 @@ class Root(BoxLayout):
         t = Thread(target=self.iterate_over_files, args=[file_path.decode("utf-8")])
         t.daemon = True
         t.start()
-        #self.iterate_over_files(file_path.decode("utf-8"))
+        # self.iterate_over_files(file_path.decode("utf-8"))
 
     def dismiss_popup(self):
         self._popup.dismiss()

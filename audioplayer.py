@@ -54,13 +54,13 @@ class AudioPanel(BoxLayout):
         for child in self.children:
             object_class = child.__class__.__name__
             if object_class == 'Slider':
-                slider = child
+                self.slider = child
             if object_class == 'BoxLayout':
-                progress_box = child
+                self.progress_box = child
             if object_class == 'Label':
-                progress_label = child
+                self.progress_label = child
             if object_class == 'Button':
-                play_button = child
+                self.play_button = child
 
     def get_layout(self):
         for child in self.children:
@@ -80,12 +80,14 @@ class AudioPanel(BoxLayout):
         self.duration = self.sound.length
         return self.duration
 
-    def set_progress(self):
+    def reset_progress(self):
         if self.sound is None:
             duration = self.get_duration()
         else:
             duration = self.duration
-        return str(datetime.timedelta(seconds=math.floor(duration)))
+        zeroPos = str(datetime.timedelta(seconds=0))
+        endPos = str(datetime.timedelta(seconds=math.floor(duration)))
+        return zeroPos + " / " + endPos
 
     def play_audio(self):
         if self.sound is None:

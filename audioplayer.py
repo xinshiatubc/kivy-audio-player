@@ -46,27 +46,30 @@ class AudioPanel(BoxLayout):
     volume = NumericProperty(1.0)
     play_button = ObjectProperty(None)
     progress_label = ObjectProperty(None)
-    progress_bar = ObjectProperty(None)
+    progress_box = ObjectProperty(None)
     slider = ObjectProperty(None)
-    position = NumericProperty(0.0)
-    stop_pressed = StringProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # self.sound.bind(on_stop=self.done)
         for child in self.children:
             object_class = child.__class__.__name__
             if object_class == 'Slider':
+                slider = child
+            if object_class == 'BoxLayout':
+                progress_box = child
+            if object_class == 'Label':
+                progress_label = child
+            if object_class == 'Button':
+                play_button = child
+
+    def get_layout(self):
+        for child in self.children:
+            object_class = child.__class__.__name__
+            logging.info(object_class)
+            if object_class == 'Slider':
                 self.slider = child
             if object_class == 'BoxLayout':
-
-                fl = child.children[0]
-                logging.info(fl)
-                '''
-                for sub_fl in fl.children:
-                    if sub_fl.children[0].__class__.__name__ == 'ProgressBar':
-                        self.progress_bar = sub_fl.children[0]
-                '''
+                self.progress_box = child
             if object_class == 'Label':
                 self.progress_label = child
             if object_class == 'Button':
@@ -77,33 +80,29 @@ class AudioPanel(BoxLayout):
         self.duration = self.sound.length
         return self.duration
 
-    def reset_progress(self):
+    def set_progress(self):
         if self.sound is None:
             duration = self.get_duration()
         else:
             duration = self.duration
-        zeroPos = str(datetime.timedelta(seconds=0))
-        endPos = str(datetime.timedelta(seconds=math.floor(duration)))
-        label_text = zeroPos + " / " + endPos
-        return label_text
+        return str(datetime.timedelta(seconds=math.floor(duration)))
 
     def play_audio(self):
         if self.sound is None:
             self.sound = SoundLoader.load(self.audio_file)
 
         if self.sound.status != 'stop':
-            self.position = self.sound.get_pos()
             self.sound.stop()
-            self.stop_pressed = "true"
+            if self.play_button is None:
+                self.get_layout()
+                logging.info(self.play_button)
             self.play_button.background_normal = "./img/play_inverse.png"
         else:
             self.sound.volume = self.volume
             self.sound.play()
-            self.sound.seek(self.position)
+            if self.play_button is None:
+                self.get_layout()
             self.play_button.background_normal = "./img/stop_inverse.png"
-
-    def done(self):
-        self.play_button.background_normal = "./img/play_inverse.png"
 
 
 class Root(BoxLayout):

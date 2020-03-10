@@ -86,9 +86,9 @@ Root:
         on_press: audio_panel.play_audio()
 
     Label:
-        size_hint_x: 0.18
+        size_hint_x: 0.15
         size_hint_y: 1
-        text: audio_panel.reset_progress()
+        text: audio_panel.set_progress()
     BoxLayout:
         size_hint_x:0.55
         size_hint_y: 1
@@ -113,7 +113,7 @@ Root:
 
 
     Slider:
-        size_hint_x:0.17
+        size_hint_x:0.2
         size_hint_y: 1
         min: 0.0
         max: 1.0

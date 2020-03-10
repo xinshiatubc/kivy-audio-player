@@ -34,6 +34,10 @@ class LoadDialog(FloatLayout):
     cancel = ObjectProperty(None)
 
 
+class AudioPanel(BoxLayout):
+    audio_file = ObjectProperty(None)
+
+
 class Root(BoxLayout):
 
     def __init__(self, **kwargs):
@@ -68,13 +72,19 @@ def iterate_over_files(root_dir):
 
     # first calculate number of files to process
     file_count = 0
+    app = App.get_running_app()
+    audio_list = app.root.ids['audio_list']
+    audio_list.bind(minimum_height=audio_list.setter('height'))
 
     for subdir, dirs, files in os.walk(root_dir):
         for file in files:
-            filepath = subdir + os.sep + file
+            file_path = subdir + os.sep + file
             if is_audio_file(file):
                 file_count += 1
+                audio_list.add_widget(AudioPanel(audio_file=file_path))
 
+    count_label = app.root.ids['file_count_label']
+    count_label.text = str(file_count) + " audio files found"
     logging.info(str(file_count) + " audio files found")
 
 

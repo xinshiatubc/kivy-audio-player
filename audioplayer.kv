@@ -1,4 +1,5 @@
 Root:
+    id: root_bl
     orientation: 'vertical'
 
     BoxLayout:
@@ -27,11 +28,82 @@ Root:
             size_hint_y: 1
             text: 'show directory'
             on_release: root.show()
+    Label:
+        id: file_count_label
+        size_hint_y: 0.08
+        text: " "
+    FloatLayout:
+        id: audio_fl
+        size_hint: 0.9,0.84
+        pos_hint:{'center_x': .5, 'center_y': .5}
+        canvas:
+            Color:
+                rgba:0.95,0.85,0.26,0
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        ScrollView:
+            id: audio_scroll
+            size_hint: (1, None)
+            size: (audio_fl.width * 0.9, audio_fl.height * 0.8)
+            pos_hint:{'center_x': .5, 'center_y': .5}
+            do_scroll_x:False
+            do_scroll_y: True
+            canvas:
+                Color:
+                    rgba:1,0,0,0
+                Rectangle:
+                    pos:self.pos
+                    size:self.size
 
+            GridLayout:
+                id: audio_list
+                cols: 1
+                width: audio_scroll.width
+                size_hint: (None, None)
+                pos_hint: {'center_x': .5}
+                canvas:
+                    Color:
+                        rgba:1,0,0,0
+                    Rectangle:
+                        pos:self.pos
+                        size:self.size
+
+
+
+
+
+<AudioPanel>:
+    height: 90
+    size_hint_y: None
+    padding: [0,10,10,10]
+
+    Image:
+        size_hint_x: 0.1
+        size_hint_y: 1
+        source: './img/play_inverse.png'
+    Label:
+        size_hint_x: 0.15
+        size_hint_y: 1
+        text: ""
     BoxLayout:
-        orientation: 'vertical'
-        size_hint_y: 0.92
-
+        size_hint_x:0.55
+        size_hint_y: 1
+        canvas:
+            Color:
+                rgba:0.95,0.85,0.26,1
+            Rectangle:
+                pos:self.pos
+                size:self.size
+    Slider:
+        size_hint_x:0.2
+        size_hint_y: 1
+        min: 0.0
+        max: 1.0
+        value: 1.0
+        orientation:'horizontal'
+        value_track:True
+        value_track_color:[0.95, 0.85, 0.26, 1]
 
 <LoadDialog>:
     text_input: text_input

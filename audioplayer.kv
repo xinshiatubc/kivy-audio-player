@@ -1,0 +1,63 @@
+Root:
+    orientation: 'vertical'
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.08
+        canvas:
+            Color:
+                rgba:1,0,0,0
+            Rectangle:
+                pos:self.pos
+                size:self.size
+
+    	TextInput:
+            id: dir_input
+            size_hint_x: 0.8
+            size_hint_y: 1
+            multiline: False
+            hint_text:"click show directory button or drop a folder"
+            padding: [10, (self.height-self.line_height)/2]
+
+
+        Button:
+            id:load_button
+            text: 'load'
+            size_hint_x: 0.2
+            size_hint_y: 1
+            text: 'show directory'
+            on_release: root.show()
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: 0.92
+
+
+<LoadDialog>:
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            show_hidden: True
+            dirselect: True
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text,1)

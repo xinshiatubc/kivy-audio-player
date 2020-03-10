@@ -48,6 +48,8 @@ class AudioPanel(BoxLayout):
     progress_label = ObjectProperty(None)
     progress_box = ObjectProperty(None)
     slider = ObjectProperty(None)
+    position = NumericProperty(0.0)
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -77,6 +79,7 @@ class AudioPanel(BoxLayout):
 
     def get_duration(self):
         self.sound = SoundLoader.load(self.audio_file)
+        self.sound.bind(on_stop=self.done)
         self.duration = self.sound.length
         return self.duration
 
@@ -92,6 +95,7 @@ class AudioPanel(BoxLayout):
     def play_audio(self):
         if self.sound is None:
             self.sound = SoundLoader.load(self.audio_file)
+            self.sound.bind(on_stop=self.done)
 
         if self.sound.status != 'stop':
             self.sound.stop()
@@ -99,6 +103,7 @@ class AudioPanel(BoxLayout):
                 self.get_layout()
                 logging.info(self.play_button)
             self.play_button.background_normal = "./img/play_inverse.png"
+
         else:
             self.sound.volume = self.volume
             self.sound.play()
@@ -106,6 +111,8 @@ class AudioPanel(BoxLayout):
                 self.get_layout()
             self.play_button.background_normal = "./img/stop_inverse.png"
 
+    def done(self, dt):
+        self.play_button.background_normal = "./img/play_inverse.png"
 
 class Root(BoxLayout):
 

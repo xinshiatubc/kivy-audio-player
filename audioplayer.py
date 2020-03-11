@@ -56,6 +56,7 @@ class AudioPanel(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.stop_pressed = "false"
+
         for child in self.children:
             object_class = child.__class__.__name__
             if object_class == 'Slider':
@@ -67,6 +68,7 @@ class AudioPanel(BoxLayout):
                     if fl_child.children:
                         if fl_child.children[0].__class__.__name__ == 'ProgressBar':
                             self.progress_bar = fl_child.children[0]
+
             if object_class == 'Label':
                 self.progress_label = child
             if object_class == 'Button':
@@ -109,7 +111,6 @@ class AudioPanel(BoxLayout):
         if len(self.event_list) == 0:
             event = Clock.schedule_interval(partial(self.update_progress), 0.5)
             self.event_list.append(event)
-            logging.info("clock created")
 
         if self.sound is None:
             self.sound = SoundLoader.load(self.audio_file)
@@ -148,15 +149,38 @@ class AudioPanel(BoxLayout):
             self.sound.volume = value
             self.volume = value
 
-    def update_progress(self, value):
+    def update_progress(self, value=None):
         if self.sound:
             pos = self.sound.get_pos()
-
-            curPos = str(datetime.timedelta(seconds=round(pos)))
+            if pos == 0.0:
+                curPos = str(datetime.timedelta(seconds=round(self.position)))
+            else:
+                curPos = str(datetime.timedelta(seconds=round(pos)))
             endPos = str(datetime.timedelta(seconds=math.floor(self.sound.length)))
             self.progress_label.text = curPos + " / " + endPos
-
             self.progress_bar.value = math.ceil(pos)
+
+    def play_from(self, percentage):
+        if self.sound:
+            duration = self.sound.length
+            position = duration * percentage
+
+            # check if the sound is currently playing
+            if self.sound.status != 'stop':
+                self.sound.play()
+                self.sound.seek(position)
+                self.position = position
+                self.update_progress()
+
+    def on_touch_down(self, touch):
+
+        if self.progress_box.collide_point(touch.x, touch.y):
+            width = self.progress_box.right - self.progress_box.x
+            percentage = (touch.x - self.progress_box.x) / width
+            self.play_from(percentage)
+
+        # make sure we aren't overriding any important functionality
+        return super().on_touch_down(touch)
 
 
 class Root(BoxLayout):

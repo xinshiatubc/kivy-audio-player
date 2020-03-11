@@ -51,6 +51,7 @@ class AudioPanel(BoxLayout):
     slider = ObjectProperty(None)
     position = NumericProperty(0.0)
     stop_pressed = StringProperty(None)
+    event_list = ListProperty([])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -105,6 +106,11 @@ class AudioPanel(BoxLayout):
         return zeroPos + " / " + endPos
 
     def play_audio(self):
+        if len(self.event_list) == 0:
+            event = Clock.schedule_interval(partial(self.update_progress), 0.5)
+            self.event_list.append(event)
+            logging.info("clock created")
+
         if self.sound is None:
             self.sound = SoundLoader.load(self.audio_file)
             self.sound.bind(on_stop=self.done)
@@ -120,23 +126,37 @@ class AudioPanel(BoxLayout):
         else:
             self.sound.volume = self.volume
             self.sound.play()
+            self.event_list[0]()
             self.sound.seek(self.position)
+
             if self.play_button is None:
                 self.get_layout()
             self.play_button.background_normal = "./img/stop_inverse.png"
 
     def done(self, dt):
+        self.event_list[0].cancel()
         self.play_button.background_normal = "./img/play_inverse.png"
         if self.stop_pressed == "true":
             self.stop_pressed = "false"
         else:
             self.position = 0.0
             self.progress_label.text = self.reset_progress()
+            self.progress_bar.value = 0.0
 
     def adjust_volume(self, value):
         if self.sound:
             self.sound.volume = value
             self.volume = value
+
+    def update_progress(self, value):
+        if self.sound:
+            pos = self.sound.get_pos()
+
+            curPos = str(datetime.timedelta(seconds=round(pos)))
+            endPos = str(datetime.timedelta(seconds=math.floor(self.sound.length)))
+            self.progress_label.text = curPos + " / " + endPos
+
+            self.progress_bar.value = math.ceil(pos)
 
 
 class Root(BoxLayout):

@@ -40,6 +40,7 @@ class Dialog(FloatLayout):
 
 
 class AudioPanel(BoxLayout):
+    # TODO: allow only one track playing
     audio_file = ObjectProperty(None)
     sound = ObjectProperty(None, allownone=True)
     duration = NumericProperty(0.0)

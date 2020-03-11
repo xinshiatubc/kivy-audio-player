@@ -54,6 +54,7 @@ class AudioPanel(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.stop_pressed = "false"
         for child in self.children:
             object_class = child.__class__.__name__
             if object_class == 'Slider':
@@ -109,8 +110,9 @@ class AudioPanel(BoxLayout):
             self.sound.bind(on_stop=self.done)
 
         if self.sound.status != 'stop':
-            self.sound.stop()
+            self.position = self.sound.get_pos()
             self.stop_pressed = "true"
+            self.sound.stop()
             if self.play_button is None:
                 self.get_layout()
             self.play_button.background_normal = "./img/play_inverse.png"
@@ -118,6 +120,7 @@ class AudioPanel(BoxLayout):
         else:
             self.sound.volume = self.volume
             self.sound.play()
+            self.sound.seek(self.position)
             if self.play_button is None:
                 self.get_layout()
             self.play_button.background_normal = "./img/stop_inverse.png"
@@ -127,6 +130,7 @@ class AudioPanel(BoxLayout):
         if self.stop_pressed == "true":
             self.stop_pressed = "false"
         else:
+            self.position = 0.0
             self.progress_label.text = self.reset_progress()
 
     def adjust_volume(self, value):

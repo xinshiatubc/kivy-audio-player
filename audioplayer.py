@@ -47,9 +47,10 @@ class AudioPanel(BoxLayout):
     play_button = ObjectProperty(None)
     progress_label = ObjectProperty(None)
     progress_box = ObjectProperty(None)
+    progress_bar = ObjectProperty(None)
     slider = ObjectProperty(None)
     position = NumericProperty(0.0)
-
+    stop_pressed = StringProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -59,6 +60,11 @@ class AudioPanel(BoxLayout):
                 self.slider = child
             if object_class == 'BoxLayout':
                 self.progress_box = child
+                fl = child.children[0]
+                for fl_child in fl.children:
+                    if fl_child.children:
+                        if fl_child.children[0].__class__.__name__ == 'ProgressBar':
+                            self.progress_bar = fl_child.children[0]
             if object_class == 'Label':
                 self.progress_label = child
             if object_class == 'Button':
@@ -72,6 +78,11 @@ class AudioPanel(BoxLayout):
                 self.slider = child
             if object_class == 'BoxLayout':
                 self.progress_box = child
+                fl = child.children[0]
+                for fl_child in fl.children:
+                    if fl_child.children:
+                        if fl_child.children[0].__class__.__name__ == 'ProgressBar':
+                            self.progress_bar = fl_child.children[0]
             if object_class == 'Label':
                 self.progress_label = child
             if object_class == 'Button':
@@ -99,9 +110,9 @@ class AudioPanel(BoxLayout):
 
         if self.sound.status != 'stop':
             self.sound.stop()
+            self.stop_pressed = "true"
             if self.play_button is None:
                 self.get_layout()
-                logging.info(self.play_button)
             self.play_button.background_normal = "./img/play_inverse.png"
 
         else:
@@ -113,6 +124,16 @@ class AudioPanel(BoxLayout):
 
     def done(self, dt):
         self.play_button.background_normal = "./img/play_inverse.png"
+        if self.stop_pressed == "true":
+            self.stop_pressed = "false"
+        else:
+            self.progress_label.text = self.reset_progress()
+
+    def adjust_volume(self, value):
+        if self.sound:
+            self.sound.volume = value
+            self.volume = value
+
 
 class Root(BoxLayout):
 

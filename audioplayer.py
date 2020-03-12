@@ -154,6 +154,7 @@ class AudioPanel(BoxLayout):
         if self.sound:
             pos = self.sound.get_pos()
             if pos == 0.0:
+                pos = self.position
                 curPos = str(datetime.timedelta(seconds=round(self.position)))
             else:
                 curPos = str(datetime.timedelta(seconds=round(pos)))

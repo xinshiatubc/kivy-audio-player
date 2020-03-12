@@ -27,6 +27,10 @@ import datetime
 import math
 import matplotlib
 
+# specify Agg as Matplotlib backend.
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 class LoadDialog(FloatLayout):
     save = ObjectProperty(None)
@@ -50,6 +54,7 @@ class AudioPanel(BoxLayout):
     progress_box = ObjectProperty(None)
     progress_bar = ObjectProperty(None)
     slider = ObjectProperty(None)
+    waveform = ObjectProperty(None)
     position = NumericProperty(0.0)
     stop_pressed = StringProperty(None)
     event_list = ListProperty([])
@@ -57,7 +62,6 @@ class AudioPanel(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.stop_pressed = "false"
-
         for child in self.children:
             object_class = child.__class__.__name__
             if object_class == 'Slider':
@@ -69,6 +73,9 @@ class AudioPanel(BoxLayout):
                     if fl_child.children:
                         if fl_child.children[0].__class__.__name__ == 'ProgressBar':
                             self.progress_bar = fl_child.children[0]
+                    else:
+                        self.waveform = fl_child
+                        self.plot_waveform()
 
             if object_class == 'Label':
                 self.progress_label = child
@@ -183,6 +190,21 @@ class AudioPanel(BoxLayout):
 
         # make sure we aren't overriding any important functionality
         return super().on_touch_down(touch)
+
+    def plot_waveform(self):
+        plt.close('all')
+        y, sr = librosa.load(self.audio_file)
+        fig = plt.figure(frameon=False)
+        fig.patch.set_facecolor('#000000')
+        fig.patch.set_alpha(0)
+        plt.subplot(1, 1, 1)
+        # getting subplot to fill the figure
+        plt.gca().set_position([0, 0, 1, 1])
+        plt.axis('off')
+        librosa.display.waveplot(y, sr=sr)
+        canvas = FigureCanvasKivyAgg(plt.gcf(), pos_hint={'x': 0, 'y': 0})
+        canvas.canvas.opacity = 0.9
+        self.waveform.add_widget(canvas)
 
 
 class Root(BoxLayout):

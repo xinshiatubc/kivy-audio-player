@@ -75,6 +75,7 @@ class AudioPanel(BoxLayout):
 
                     if object_class == 'Label':
                         self.progress_label = child
+                    # TODO: button kept aspect ratio
                     if object_class == 'Button':
                         self.play_button = child
 

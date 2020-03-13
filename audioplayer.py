@@ -238,9 +238,12 @@ class Root(BoxLayout):
 
     def save(self, path, filename, is_search):
         dir_input = self.ids['dir_input']
-
         dir_input.text = filename
-        self.iterate_over_files(str(filename))
+
+        t = Thread(target=self.iterate_over_files, args=[filename])
+        t.daemon = True
+        t.start()
+
         self.dismiss_popup()
 
     def showDialogBox(self):

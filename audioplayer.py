@@ -257,6 +257,8 @@ class Root(BoxLayout):
         app = App.get_running_app()
         audio_list = self.ids['audio_list']
         audio_list.bind(minimum_height=audio_list.setter('height'))
+        file_count_label = self.ids['file_count_label']
+        file_count_label.text = 'loading audio files...'
 
         for subdir, dirs, files in os.walk(root_dir):
             for file in files:

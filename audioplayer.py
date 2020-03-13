@@ -2,22 +2,13 @@ from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
-from kivy.uix.button import Button
-from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-from kivy.factory import Factory
 from kivy.properties import ObjectProperty, StringProperty, NumericProperty, ListProperty
 from kivy.clock import Clock
-from kivy.graphics import Color, Line, Ellipse, Rectangle
 from functools import partial
 from threading import Thread
-from kivy.uix.stencilview import StencilView
-from kivy.uix.progressbar import ProgressBar
 
 import librosa
 import librosa.display
@@ -62,25 +53,33 @@ class AudioPanel(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.stop_pressed = "false"
-        for child in self.children:
-            object_class = child.__class__.__name__
-            if object_class == 'Slider':
-                self.slider = child
-            if object_class == 'BoxLayout':
-                self.progress_box = child
-                fl = child.children[0]
-                for fl_child in fl.children:
-                    if fl_child.children:
-                        if fl_child.children[0].__class__.__name__ == 'ProgressBar':
-                            self.progress_bar = fl_child.children[0]
-                    else:
-                        self.waveform = fl_child
-                        self.plot_waveform()
+        for child_panel in self.children:
 
-            if object_class == 'Label':
-                self.progress_label = child
-            if object_class == 'Button':
-                self.play_button = child
+            if child_panel.__class__.__name__ == 'BoxLayout':
+                bl = child_panel
+
+                for child in bl.children:
+                    object_class = child.__class__.__name__
+                    if object_class == 'Slider':
+                        self.slider = child
+                    if object_class == 'BoxLayout':
+                        self.progress_box = child
+                        fl = child.children[0]
+                        for fl_child in fl.children:
+                            if fl_child.children:
+                                if fl_child.children[0].__class__.__name__ == 'ProgressBar':
+                                    self.progress_bar = fl_child.children[0]
+                            else:
+                                self.waveform = fl_child
+                                self.plot_waveform()
+
+                    if object_class == 'Label':
+                        self.progress_label = child
+                    if object_class == 'Button':
+                        self.play_button = child
+
+    def get_file_name(self):
+        return os.path.basename(self.audio_file)
 
     def get_layout(self):
         for child in self.children:

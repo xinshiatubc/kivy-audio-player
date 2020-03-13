@@ -75,53 +75,66 @@ Root:
 
 <AudioPanel>:
     id:audio_panel
-    height: 90
+    height: 120
     size_hint_y: None
+    orientation: 'vertical'
     padding: [0,10,10,10]
 
-    Button:
-        size_hint_x: 0.1
-        size_hint_y: 1
-        background_normal: "./img/play_inverse.png"
-        on_press: audio_panel.play_audio()
-
     Label:
-        size_hint_x: 0.18
-        size_hint_y: 1
-        text: audio_panel.reset_progress()
+        size_hint_x: 1
+        size_hint_y: 0.25
+        text_size: self.size
+        halign:'left'
+        valign:'middle'
+        text: audio_panel.get_file_name()
+
     BoxLayout:
-        size_hint_x:0.55
-        size_hint_y: 1
-        canvas:
-            Color:
-                rgba:0.95,0.85,0.26,0
-            Rectangle:
-                pos:self.pos
-                size:self.size
-        FloatLayout:
-            pos_hint: {"x":0,"y":0}
+        size_hint_x: 1
+        size_hint_y: 0.75
+        padding: [0,10,0,10]
+        Button:
+            size_hint_x: 0.075
+            size_hint_y: 1
+            background_normal: "./img/play_inverse.png"
+            on_press: audio_panel.play_audio()
 
+        Label:
+            size_hint_x: 0.18
+            size_hint_y: 1
+            text: audio_panel.reset_progress()
+        BoxLayout:
+            size_hint_x:0.575
+            size_hint_y: 1
+            canvas:
+                Color:
+                    rgba:0.95,0.85,0.26,0
+                Rectangle:
+                    pos:self.pos
+                    size:self.size
             FloatLayout:
-                pos_hint: {'x':0, 'y':0}
+                pos_hint: {"x":0,"y":0}
 
-            FloatLayout:
-                pos_hint: {'x':0, 'y':0}
-                ProgressBar:
-                    value:0
-                    max:audio_panel.get_duration()
-                    pos_hint:{'x': 0, 'y': 0}
+                FloatLayout:
+                    pos_hint: {'x':0, 'y':0}
+
+                FloatLayout:
+                    pos_hint: {'x':0, 'y':0}
+                    ProgressBar:
+                        value:0
+                        max:audio_panel.get_duration()
+                        pos_hint:{'x': 0, 'y': 0}
 
 
-    Slider:
-        size_hint_x:0.17
-        size_hint_y: 1
-        min: 0.0
-        max: 1.0
-        value: 1.0
-        orientation:'horizontal'
-        value_track:True
-        value_track_color:[0.95, 0.85, 0.26, 1]
-        on_value: audio_panel.adjust_volume(self.value)
+        Slider:
+            size_hint_x:0.17
+            size_hint_y: 1
+            min: 0.0
+            max: 1.0
+            value: 1.0
+            orientation:'horizontal'
+            value_track:True
+            value_track_color:[0.95, 0.85, 0.26, 1]
+            on_value: audio_panel.adjust_volume(self.value)
 
 <LoadDialog>:
     text_input: text_input

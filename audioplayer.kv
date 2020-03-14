@@ -20,7 +20,6 @@ Root:
             hint_text:"click show directory button or drop a folder"
             padding: [10, (self.height-self.line_height)/2]
 
-
         Button:
             id:load_button
             text: 'load'
@@ -28,6 +27,7 @@ Root:
             size_hint_y: 1
             text: 'show directory'
             on_release: root.show()
+
     Label:
         id: file_count_label
         size_hint_y: 0.08
@@ -95,8 +95,14 @@ Root:
         Button:
             size_hint_x: 0.075
             size_hint_y: 1
-            background_normal: "./img/play_inverse.png"
             on_press: audio_panel.play_audio()
+            background_color: 0, 0, 0, 0
+            AsyncImage:
+                source: "./img/play_inverse.png"
+                keep_ratio: True
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                width: 25
 
         Label:
             size_hint_x: 0.18

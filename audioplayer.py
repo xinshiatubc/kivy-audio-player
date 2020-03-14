@@ -75,7 +75,6 @@ class AudioPanel(BoxLayout):
 
                     if object_class == 'Label':
                         self.progress_label = child
-                    # TODO: button kept aspect ratio
                     if object_class == 'Button':
                         self.play_button = child
 
@@ -130,7 +129,7 @@ class AudioPanel(BoxLayout):
             self.sound.stop()
             if self.play_button is None:
                 self.get_layout()
-            self.play_button.background_normal = "./img/play_inverse.png"
+            self.play_button.children[0].source = "./img/play_inverse.png"
 
         else:
             self.sound.volume = self.volume
@@ -140,11 +139,11 @@ class AudioPanel(BoxLayout):
 
             if self.play_button is None:
                 self.get_layout()
-            self.play_button.background_normal = "./img/stop_inverse.png"
+            self.play_button.children[0].source = "./img/stop_inverse.png"
 
     def done(self, dt):
         self.event_list[0].cancel()
-        self.play_button.background_normal = "./img/play_inverse.png"
+        self.play_button.children[0].source = "./img/play_inverse.png"
         if self.stop_pressed == "true":
             self.stop_pressed = "false"
         else:

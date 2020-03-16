@@ -143,6 +143,7 @@ Root:
             on_value: audio_panel.adjust_volume(self.value)
 
 <LoadDialog>:
+    id: load_dialog
     text_input: text_input
     BoxLayout:
         size: root.size
@@ -152,12 +153,14 @@ Root:
             id: filechooser
             show_hidden: True
             dirselect: True
+            path: load_dialog.get_path()
             on_selection: text_input.text = self.selection and self.selection[0] or ''
 
         TextInput:
             id: text_input
             size_hint_y: None
             height: 30
+            text: load_dialog.get_path()
             multiline: False
 
         BoxLayout:

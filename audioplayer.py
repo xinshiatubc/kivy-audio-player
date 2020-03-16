@@ -27,6 +27,13 @@ class LoadDialog(FloatLayout):
     save = ObjectProperty(None)
     text_input = ObjectProperty(None)
     cancel = ObjectProperty(None)
+    path = StringProperty(None)
+
+    def get_path(self):
+        if self.path == "":
+            return "/"
+        else:
+            return self.path
 
 
 class Dialog(FloatLayout):
@@ -229,7 +236,8 @@ class Root(BoxLayout):
         self._popup.dismiss()
 
     def show(self):
-        content = LoadDialog(save=self.save, cancel=self.dismiss_popup)
+        dir_input = self.ids['dir_input']
+        content = LoadDialog(save=self.save, cancel=self.dismiss_popup, path=dir_input.text)
 
         self._popup = Popup(title="Load file", content=content,
                             size_hint=(0.9, 0.9))
@@ -259,6 +267,7 @@ class Root(BoxLayout):
         file_count = 0
         app = App.get_running_app()
         audio_list = self.ids['audio_list']
+        audio_list.clear_widgets()
         audio_list.bind(minimum_height=audio_list.setter('height'))
         file_count_label = self.ids['file_count_label']
         file_count_label.text = 'loading audio files...'

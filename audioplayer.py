@@ -179,13 +179,12 @@ class AudioPanel(BoxLayout):
         if self.sound:
             duration = self.sound.length
             position = duration * percentage
-
+            self.position = position
+            self.update_progress()
             # check if the sound is currently playing
             if self.sound.status != 'stop':
                 self.sound.play()
                 self.sound.seek(position)
-                self.position = position
-                self.update_progress()
 
     def on_touch_down(self, touch):
 

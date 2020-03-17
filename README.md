@@ -27,14 +27,14 @@ That’s it. You should now be able to import kivy in Python
 
 ## Installing Other Dependencies
 
-1. Install Librosa
+1. Install Librosa for waveform plotting
 
 ```
 pip install librosa
 ```
 
-2. Install matplotlib custom widget 
-Ensure you have Kivy Garden installed  
+2. Install matplotlib custom widget. 
+Make sure you have Kivy Garden installed  
 
 ```
 pip install kivy-garden

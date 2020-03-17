@@ -4,7 +4,7 @@ An audio player application written in Python and Kivy language.
  
 ## Kivy Installation on Windows
 
-1. Ensure you have **Python 3.7** or previous version installed. Currently Kivy doesn't support Python 3.8 
+1. Ensure you have **Python 3.7** or previous version installed. Currently Kivy doesn't support Python 3.8.
 
 2. Ensure you have the latest pip and wheel:
 
@@ -23,27 +23,27 @@ python -m pip install kivy.deps.gstreamer
 python -m pip install kivy
 ```
 
-That’s it. You should now be able to import kivy in Python
+That’s it. You should now be able to import kivy in Python.
 
 ## Installing Other Dependencies
 
-1. Install Librosa for waveform plotting
+1. Install Librosa for waveform plotting:
 
 ```
 pip install librosa
 ```
 
 2. Install matplotlib custom widget. 
-Make sure you have Kivy Garden installed  
+Make sure you have Kivy Garden installed: 
 
 ```
 pip install kivy-garden
 ```
-Install matplotlib garden package
+Install matplotlib garden package:
 ```
 garden install matplotlib
 ```
-3. Ensure you have matplotlib installed
+3. Ensure you have matplotlib installed:
 ```
 python -m pip install matplotlib
 ```
